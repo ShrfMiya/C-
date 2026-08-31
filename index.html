@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#14172a" />
+<title>Mono — habits & money, one quiet sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --hue:228;
+  --ink:hsl(var(--hue),28%,10%);
+  --ink-2:hsl(var(--hue),20%,24%);
+  --body:hsl(var(--hue),14%,38%);
+  --muted:hsl(var(--hue),11%,54%);
+  --faint:hsl(var(--hue),13%,72%);
+  --line:hsl(var(--hue),18%,89%);
+  --line-2:hsl(var(--hue),20%,93.5%);
+  --soft:hsl(var(--hue),26%,96%);
+  --paper:hsl(var(--hue),30%,97.5%);
+  --panel:#ffffff;
+  --accent:hsl(var(--hue),28%,34%);
+  --accent-pale:hsl(var(--hue),26%,89%);
+  --shadow:0 18px 44px hsl(var(--hue),30%,18%/.09);
+  --shadow-sm:0 4px 16px hsl(var(--hue),30%,18%/.05);
+  --r:16px;
+  --tr:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:14px;letter-spacing:-.01em;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+::selection{background:var(--accent-pale);color:var(--ink)}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+:focus-visible{outline:2px solid var(--ink-2);outline-offset:2px;border-radius:6px}
+svg{flex-shrink:0}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-feature-settings:'tnum'}
+
+.app{display:flex;min-height:100vh}
+
+/* sidebar */
+.sidebar{
+  width:248px;flex-shrink:0;background:var(--ink);color:#fff;
+  padding:26px 16px 18px;display:flex;flex-direction:column;gap:0;
+  position:sticky;top:0;height:100vh;
+}
+.brand{display:flex;align-items:center;gap:11px;padding:2px 10px 30px;font-weight:750;letter-spacing:-.04em;font-size:18px}
+.brand-mark{width:30px;height:30px;border-radius:9px;background:#fff;color:var(--ink);display:grid;place-items:center;font-weight:800;font-size:14px;letter-spacing:-.06em}
+.brand small{display:block;font-weight:500;font-size:10px;letter-spacing:.06em;color:hsl(var(--hue),14%,58%);margin-top:1px}
+.nav-label{color:hsl(var(--hue),14%,50%);text-transform:uppercase;font-size:9.5px;letter-spacing:.16em;font-weight:600;padding:0 12px 10px;margin-top:6px}
+.nav{display:grid;gap:4px}
+.nav-btn{
+  width:100%;display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;
+  color:hsl(var(--hue),14%,68%);font-size:13px;font-weight:550;text-align:left;transition:.18s var(--tr);position:relative;
+}
+.nav-btn:hover{background:hsla(0,0%,100%,.07);color:#fff}
+.nav-btn.active{background:hsla(0,0%,100%,.09);color:#fff;font-weight:600}
+.nav-btn.active::before{content:"";position:absolute;left:-16px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:hsl(var(--hue),26%,78%)}
+.nav-btn .count{margin-left:auto;font-size:10.5px;background:hsla(0,0%,100%,.08);padding:2px 7px;border-radius:99px;color:#fff;font-weight:600}
+.nav-icon{width:18px;display:grid;place-items:center}
+.side-note{margin-top:auto;padding:14px 12px;border-top:1px solid hsla(0,0%,100%,.09);color:hsl(var(--hue),14%,55%);font-size:11px;line-height:1.5}
+.side-note b{color:#fff;font-weight:600;display:block;margin-bottom:2px}
+.profile{padding:14px 10px 0;border-top:1px solid hsla(0,0%,100%,.09);margin-top:14px;display:flex;align-items:center;gap:10px}
+.avatar{width:32px;height:32px;border-radius:50%;background:hsl(var(--hue),22%,86%);color:var(--ink);display:grid;place-items:center;font-weight:700;font-size:11px}
+.profile b{font-size:12.5px;font-weight:600;display:block}
+.profile small{display:block;color:hsl(var(--hue),14%,55%);font-size:10.5px;margin-top:2px}
+
+/* main */
+.main{flex:1;min-width:0;padding:32px 44px 64px}
+.main-inner{max-width:1200px;margin:0 auto}
+.topbar{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:26px;gap:14px}
+.eyebrow{color:var(--muted);font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+h1,h2,h3,h4,p{margin:0}
+h1{font-size:clamp(23px,3vw,30px);letter-spacing:-.05em;line-height:1;font-weight:750}
+h2{font-size:16.5px;letter-spacing:-.03em;font-weight:700}
+h3{font-size:13.5px;letter-spacing:-.02em;font-weight:650}
+.sub{color:var(--muted);font-size:12px;margin-top:4px}
+.top-actions{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:10px 14px;font-size:12.5px;font-weight:600;letter-spacing:-.01em;border:1px solid transparent;transition:.18s var(--tr);white-space:nowrap}
+.btn-primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn-primary:hover{background:var(--ink-2);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.btn-ghost{background:var(--panel);border-color:var(--line);color:var(--ink)}
+.btn-ghost:hover{background:var(--soft)}
+.icon-btn{width:38px;height:38px;padding:0;justify-content:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--ink-2);transition:.18s}
+.icon-btn:hover{background:var(--soft);color:var(--ink)}
+.link-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--ink-2);border-radius:8px;padding:6px 4px;transition:.15s}
+.link-btn:hover{color:var(--ink)}
+.page{display:none}
+.page.active{display:block;animation:appear .35s var(--tr) both}
+@keyframes appear{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* hero */
+.hero{
+  background:var(--ink);color:#fff;border-radius:20px;padding:30px 34px;
+  display:flex;justify-content:space-between;align-items:center;gap:24px;
+  position:relative;overflow:hidden;box-shadow:var(--shadow);
+}
+.hero::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(560px 280px at 88% -30%, hsl(var(--hue),30%,72%/.17), transparent 62%),
+  radial-gradient(420px 320px at 6% 130%, hsl(var(--hue),30%,60%/.10), transparent 60%);}
+.hero::after{content:"";position:absolute;width:320px;height:320px;border:1px solid hsla(0,0%,100%,.13);border-radius:50%;right:-80px;top:-130px;
+  box-shadow:0 0 0 44px hsla(0,0%,100%,.03),0 0 0 90px hsla(0,0%,100%,.02)}
+.hero-copy{position:relative;z-index:1}
+.hero-eyebrow{color:hsl(var(--hue),14%,66%);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+.hero h2{font-size:clamp(22px,2.6vw,29px);letter-spacing:-.045em;margin:12px 0 10px;font-weight:750;line-height:1.1}
+.hero .serif{font-family:'Newsreader',Georgia,serif;font-style:italic;font-weight:400;color:hsl(var(--hue),14%,72%);font-size:15.5px;max-width:440px;line-height:1.5}
+.score-box{position:relative;z-index:1;text-align:right}
+.score-num{font-size:58px;font-weight:750;letter-spacing:-.075em;line-height:1;font-feature-settings:'tnum'}
+.score-meta{color:hsl(var(--hue),14%,64%);font-size:11px;margin-top:7px;letter-spacing:.02em}
+.score-delta{display:inline-flex;align-items:center;gap:5px;margin-top:10px;padding:5px 10px;border-radius:999px;background:hsla(0,0%,100%,.1);color:hsl(var(--hue),14%,86%);font-size:11px;font-weight:600}
+
+/* grids & cards */
+.grid{display:grid;gap:16px}
+.stats{grid-template-columns:repeat(4,1fr);margin-top:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow-sm)}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+.pill{font-size:11px;font-weight:650;padding:4px 10px;border-radius:999px;background:var(--soft);color:var(--ink-2);border:1px solid var(--line-2);white-space:nowrap;font-feature-settings:'tnum'}
+.pill.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+.two-col{grid-template-columns:1.12fr .88fr;align-items:start;margin-top:16px}
+.stat{display:flex;flex-direction:column}
+.stat .top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11.5px;font-weight:550}
+.stat .top .ic{color:var(--faint)}
+.stat .val{font-size:25px;font-weight:750;letter-spacing:-.05em;margin-top:16px;font-feature-settings:'tnum'}
+.stat .val small{font-size:13px;color:var(--muted);font-weight:600;margin-left:3px}
+.stat .note{font-size:11px;color:var(--muted);margin-top:6px;display:flex;align-items:center;gap:5px}
+.stat .note.up{color:var(--ink-2)}
+.spark{margin-top:14px;height:34px}
+
+/* habit month grid */
+.month-grid{display:grid;grid-template-columns:repeat(31,1fr);gap:5px;margin-top:8px}
+.month-grid.days-30{grid-template-columns:repeat(30,1fr)}
+.month-cell{
+  aspect-ratio:1;border-radius:5px;background:var(--soft);border:1px solid var(--line-2);
+  position:relative;transition:.15s var(--tr);cursor:pointer;
+}
+.month-cell:hover{transform:scale(1.15);z-index:2;box-shadow:var(--shadow-sm)}
+.month-cell.l1{background:hsl(var(--hue),22%,86%)}
+.month-cell.l2{background:hsl(var(--hue),24%,70%)}
+.month-cell.l3{background:hsl(var(--hue),26%,50%)}
+.month-cell.l4{background:hsl(var(--hue),28%,28%)}
+.month-cell.today{outline:2px solid var(--ink);outline-offset:1px}
+.month-cell.future{opacity:.35;pointer-events:none}
+.month-legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-top:14px}
+.month-legend .dots{display:flex;gap:3px}
+.month-legend .dot{width:11px;height:11px;border-radius:3px;background:var(--soft);border:1px solid var(--line-2)}
+.month-header{display:flex;gap:14px;color:var(--muted);font-size:10.5px;font-weight:600;letter-spacing:.06em;margin-top:16px;padding-bottom:6px;border-bottom:1px solid var(--line-2)}
+.month-header .col{flex:1}
+.habit-rows{display:grid;gap:2px;margin-top:8px}
+.habit-row{display:grid;grid-template-columns:130px 1fr 46px 40px;gap:14px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line-2)}
+.habit-row:last-child{border-bottom:0}
+.habit-row .name{font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.habit-row .name .dot{width:8px;height:8px;border-radius:99px;background:var(--ink)}
+.habit-row .track{display:grid;grid-template-columns:repeat(31,1fr);gap:3px}
+.habit-row.days-30 .track{grid-template-columns:repeat(30,1fr)}
+.habit-row .track .c{aspect-ratio:1;background:var(--soft);border-radius:3px;border:1px solid var(--line-2);transition:.15s}
+.habit-row .track .c.on{background:var(--ink);border-color:var(--ink)}
+.habit-row .track .c.half{background:hsl(var(--hue),22%,68%);border-color:hsl(var(--hue),22%,68%)}
+.habit-row .track .c.today{outline:1.5px solid var(--ink);outline-offset:1px}
+.habit-row .streak{font-size:12px;font-weight:650;color:var(--ink-2);text-align:right;font-feature-settings:'tnum'}
+.habit-row .rate{font-size:11px;color:var(--muted);text-align:right;font-feature-settings:'tnum'}
+
+/* today's list */
+.progress{height:6px;background:var(--soft);border-radius:99px;overflow:hidden;margin:2px 0 10px}
+.progress i{display:block;height:100%;background:var(--ink);border-radius:inherit;width:0;transition:width .5s var(--tr)}
+.h-row{display:flex;align-items:center;gap:12px;padding:11px 8px;margin:0 -8px;border-radius:10px;border-bottom:1px solid var(--line-2);cursor:pointer;transition:background .15s}
+.h-row:hover{background:var(--soft)}
+.h-row:last-child{border-bottom:0}
+.check{width:24px;height:24px;border-radius:8px;border:1.5px solid var(--line);background:#fff;display:grid;place-items:center;color:transparent;transition:.18s var(--tr);flex-shrink:0}
+.h-row:hover .check{border-color:var(--ink-2)}
+.h-row.done .check{background:var(--ink);border-color:var(--ink);color:#fff}
+.h-row .title{font-size:13px;font-weight:600;flex:1}
+.h-row.done .title{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+.h-row .meta{font-size:11px;color:var(--muted);font-weight:500}
+.h-row .streak{font-size:11px;color:var(--ink-2);font-weight:650;background:var(--soft);padding:3px 8px;border-radius:99px;border:1px solid var(--line-2)}
+
+/* time trackers */
+.time-grid{grid-template-columns:repeat(3,1fr);margin-top:16px}
+.time-card{position:relative;overflow:hidden}
+.time-card .head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:14px}
+.time-card .label{font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.02em;display:flex;align-items:center;gap:6px}
+.time-card .badge{font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:99px;background:var(--soft);border:1px solid var(--line-2);color:var(--ink-2)}
+.time-card .big{font-size:30px;font-weight:750;letter-spacing:-.05em;font-feature-settings:'tnum';line-height:1}
+.time-card .big small{font-size:14px;color:var(--muted);font-weight:600;margin-left:3px;letter-spacing:0}
+.time-card .goal{margin-top:10px;font-size:11px;color:var(--muted);display:flex;justify-content:space-between}
+.time-card .goal b{color:var(--ink-2);font-weight:650}
+.bars{display:flex;align-items:flex-end;gap:4px;height:70px;margin-top:14px}
+.bars .bar{flex:1;background:var(--soft);border:1px solid var(--line-2);border-radius:4px 4px 2px 2px;position:relative;transition:.25s var(--tr);cursor:pointer}
+.bars .bar:hover{background:var(--accent-pale)}
+.bars .bar.today{background:var(--ink);border-color:var(--ink)}
+.bars .bar .tt{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:10px;padding:3px 6px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:.15s;font-weight:600}
+.bars .bar:hover .tt{opacity:1}
+.bars-axis{display:flex;gap:4px;margin-top:6px;font-size:9.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.bars-axis span{flex:1;text-align:center}
+
+/* finance */
+.finance-grid{grid-template-columns:1.35fr .65fr;margin-top:16px}
+.balance-card{background:var(--ink);color:#fff;border-radius:var(--r);padding:22px;position:relative;overflow:hidden}
+.balance-card::before{content:"";position:absolute;inset:0;background:radial-gradient(380px 200px at 100% 0%, hsl(var(--hue),30%,60%/.13),transparent 60%)}
+.balance-card .lbl{position:relative;font-size:11px;color:hsl(var(--hue),14%,66%);font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+.balance-card .amt{position:relative;font-size:38px;font-weight:750;letter-spacing:-.055em;margin-top:12px;font-feature-settings:'tnum'}
+.balance-card .amt small{font-size:16px;color:hsl(var(--hue),14%,66%);font-weight:600;margin-left:4px}
+.balance-card .row{position:relative;display:flex;gap:22px;margin-top:22px;padding-top:16px;border-top:1px solid hsla(0,0%,100%,.1)}
+.balance-card .row div small{display:block;font-size:10.5px;color:hsl(var(--hue),14%,64%);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:5px}
+.balance-card .row div b{font-size:16px;font-weight:700;letter-spacing:-.02em;font-feature-settings:'tnum'}
+.cat-list{display:grid;gap:10px}
+.cat-row{display:grid;grid-template-columns:22px 1fr auto;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line-2)}
+.cat-row:last-child{border-bottom:0}
+.cat-icon{width:22px;height:22px;border-radius:7px;background:var(--soft);border:1px solid var(--line-2);display:grid;place-items:center;color:var(--ink-2)}
+.cat-row .lbl b{font-size:12.5px;font-weight:600;display:block}
+.cat-row .lbl small{display:block;font-size:11px;color:var(--muted);margin-top:1px}
+.cat-row .val{font-size:12.5px;font-weight:650;font-feature-settings:'tnum';text-align:right}
+.cat-row .val small{display:block;font-weight:500;color:var(--muted);font-size:10.5px;margin-top:1px}
+
+/* transactions */
+.tx-row{display:grid;grid-template-columns:32px 1fr auto auto;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line-2)}
+.tx-row:last-child{border-bottom:0}
+.tx-ico{width:32px;height:32px;border-radius:9px;background:var(--soft);border:1px solid var(--line-2);display:grid;place-items:center;color:var(--ink-2)}
+.tx-row .t b{font-size:12.5px;font-weight:600;display:block}
+.tx-row .t small{color:var(--muted);font-size:11px;margin-top:2px;display:block}
+.tx-row .cat{font-size:11px;color:var(--muted);font-weight:550}
+.tx-row .amt{font-weight:700;font-size:13px;font-feature-settings:'tnum'}
+.tx-row .amt.pos{color:hsl(var(--hue),35%,28%)}
+.tx-row .amt.neg{color:var(--ink)}
+
+/* chart */
+.chart-wrap{position:relative;height:220px;margin-top:8px}
+.chart-wrap svg{width:100%;height:100%;overflow:visible}
+.chart-wrap .yaxis{position:absolute;left:0;top:0;height:100%;display:flex;flex-direction:column;justify-content:space-between;font-size:10px;color:var(--faint);font-weight:600}
+.chart-wrap .xaxis{display:flex;justify-content:space-between;font-size:10px;color:var(--faint);font-weight:600;margin-top:6px;padding-left:36px}
+.chart-legend{display:flex;gap:14px;font-size:11px;color:var(--muted);font-weight:550}
+.chart-legend .dot{width:9px;height:9px;border-radius:99px;background:var(--ink);margin-right:6px;display:inline-block;vertical-align:middle}
+.chart-legend .dot.faint{background:var(--faint)}
+
+/* chats */
+.chat-shell{display:grid;grid-template-columns:280px 1fr;gap:0;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-sm);height:640px}
+.chat-list{border-right:1px solid var(--line);background:var(--paper);display:flex;flex-direction:column}
+.chat-search{padding:14px;border-bottom:1px solid var(--line-2);display:flex;align-items:center;gap:8px;background:var(--panel)}
+.chat-search input{flex:1;background:var(--soft);border:1px solid var(--line-2);border-radius:9px;padding:8px 10px;font-size:12px;outline:none}
+.chat-search input:focus{border-color:var(--ink-2);background:#fff}
+.chat-items{flex:1;overflow-y:auto}
+.chat-item{padding:12px 14px;border-bottom:1px solid var(--line-2);display:flex;gap:10px;align-items:flex-start;cursor:pointer;transition:.15s}
+.chat-item:hover{background:hsl(var(--hue),22%,94%)}
+.chat-item.active{background:var(--panel);border-left:2.5px solid var(--ink);padding-left:11.5px}
+.chat-item .av{width:36px;height:36px;border-radius:50%;background:var(--soft);color:var(--ink);display:grid;place-items:center;font-weight:700;font-size:12px;border:1px solid var(--line-2);flex-shrink:0}
+.chat-item .info{flex:1;min-width:0}
+.chat-item .info .top{display:flex;justify-content:space-between;gap:8px}
+.chat-item .info b{font-size:12.5px;font-weight:650}
+.chat-item .info time{font-size:10.5px;color:var(--muted);font-weight:500;white-space:nowrap}
+.chat-item .info p{font-size:11.5px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.chat-item .info .un{display:inline-block;margin-left:6px;font-size:9.5px;background:var(--ink);color:#fff;border-radius:99px;padding:1px 6px;font-weight:700;vertical-align:middle}
+.chat-main{display:flex;flex-direction:column;background:var(--panel)}
+.chat-head{padding:14px 20px;border-bottom:1px solid var(--line-2);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.chat-head .who{display:flex;align-items:center;gap:11px}
+.chat-head .who .av{width:38px;height:38px;border-radius:50%;background:var(--soft);color:var(--ink);display:grid;place-items:center;font-weight:700;font-size:13px;border:1px solid var(--line-2)}
+.chat-head b{font-size:13.5px;font-weight:650;display:block}
+.chat-head small{display:block;font-size:11px;color:var(--muted);margin-top:1px}
+.chat-head .status{display:inline-block;width:7px;height:7px;border-radius:99px;background:hsl(var(--hue),22%,50%);margin-right:5px;vertical-align:middle}
+.chat-body{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg,var(--paper) 0%,var(--panel) 100%)}
+.chat-divider{text-align:center;font-size:10.5px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin:6px 0}
+.msg{max-width:70%;padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.5;position:relative;box-shadow:var(--shadow-sm)}
+.msg time{display:block;font-size:9.5px;color:var(--muted);margin-top:5px;letter-spacing:.05em;font-weight:600}
+.msg.them{align-self:flex-start;background:var(--panel);border:1px solid var(--line-2);border-bottom-left-radius:5px}
+.msg.me{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:5px}
+.msg.me time{color:hsla(0,0%,100%,.55)}
+.chat-compose{padding:14px 18px;border-top:1px solid var(--line-2);display:flex;gap:10px;align-items:center;background:var(--panel)}
+.chat-compose input{flex:1;background:var(--soft);border:1px solid var(--line-2);border-radius:11px;padding:11px 14px;font-size:13px;outline:none}
+.chat-compose input:focus{border-color:var(--ink-2);background:#fff}
+.chat-send{width:40px;height:40px;background:var(--ink);color:#fff;border-radius:11px;display:grid;place-items:center;transition:.2s}
+.chat-send:hover{background:var(--ink-2)}
+
+/* responsive */
+@media (max-width:1080px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .two-col,.finance-grid{grid-template-columns:1fr}
+  .time-grid{grid-template-columns:1fr}
+  .habit-row{grid-template-columns:100px 1fr 40px}
+  .habit-row .rate{display:none}
+}
+@media (max-width:820px){
+  .sidebar{display:none}
+  .main{padding:22px 18px 40px}
+  .hero{flex-direction:column;align-items:flex-start;padding:24px}
+  .score-box{text-align:left}
+  .chat-shell{grid-template-columns:1fr;height:auto}
+  .chat-list{max-height:220px}
+  .habit-row{grid-template-columns:90px 1fr}
+  .habit-row .streak{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">M</span>
+      <span>Mono<small>habits · money · v0.9</small></span>
+    </div>
+    <div class="nav-label">Workspace</div>
+    <nav class="nav" id="nav">
+      <button class="nav-btn active" data-page="today"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Today</button>
+      <button class="nav-btn" data-page="habits"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></span>Habits</button>
+      <button class="nav-btn" data-page="finance"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16M4 8v10a2 2 0 002 2h12a2 2 0 002-2V8M4 8V6a2 2 0 012-2h12a2 2 0 012 2v2M15 13h3"/></svg></span>Finance</button>
+      <button class="nav-btn" data-page="chats"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H8l-5 4V6a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>Chats<span class="count">4</span></button>
+    </nav>
+    <div class="nav-label">Life</div>
+    <nav class="nav">
+      <button class="nav-btn" data-page="today"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 22v-6M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M2 12h6M22 12h-6M4.93 19.07l4.24-4.24M14.83 9.17l4.24-4.24"/></svg></span>Sleep</button>
+      <button class="nav-btn" data-page="today"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="12" rx="4"/><path d="M8 12v2M7 13h2M15 12h.01M17 14h.01"/></svg></span>Play</button>
+      <button class="nav-btn" data-page="today"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7L9 18l-5-5"/></svg></span>Goals</button>
+      <button class="nav-btn" data-page="today"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>Settings</button>
+    </nav>
+
+    <div class="side-note">
+      <b>Quiet Mode · on</b>
+      Notifications muted until 8:00. One breath at a time.
+    </div>
+    <div class="profile">
+      <div class="avatar">EM</div>
+      <div>
+        <b>Elena Marín</b>
+        <small>elena@mono.day</small>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="main-inner">
+      <!-- topbar -->
+      <div class="topbar">
+        <div>
+          <div class="eyebrow" id="dateEyebrow">Tuesday · November</div>
+          <h1 id="pageTitle">Good morning, Elena.</h1>
+          <p class="sub">A quiet look at what you're building — habits, hours, and money, held together in one sheet.</p>
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn" title="Search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+          <button class="icon-btn" title="Notifications"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 16v-5a6 6 0 10-12 0v5l-2 2h16l-2-2zM10 21a2 2 0 004 0"/></svg></button>
+          <button class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Log entry</button>
+        </div>
+      </div>
+
+      <!-- ============ TODAY PAGE ============ -->
+      <section class="page active" id="today">
+        <!-- HERO -->
+        <div class="hero">
+          <div class="hero-copy">
+            <div class="hero-eyebrow">Day 314 · Chapter Autumn</div>
+            <h2>You're 4 habits<br/>into a steady morning.</h2>
+            <p class="serif">"The days are long, the years are short. Fill them softly, not loudly."</p>
+          </div>
+          <div class="score-box">
+            <div class="score-num" id="heroScore">82</div>
+            <div class="score-meta">Daily Balance Index</div>
+            <div class="score-delta">▲ 6 vs. your 30-day average</div>
+          </div>
+        </div>
+
+        <!-- STAT CARDS -->
+        <div class="grid stats">
+          <div class="card stat">
+            <div class="top">Consistency<span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></span></div>
+            <div class="val">87<small>%</small></div>
+            <div class="note up">▲ 4% this week</div>
+            <svg class="spark" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline points="0,26 10,24 20,25 30,20 40,22 50,17 60,19 70,13 80,15 90,9 100,11" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="card stat">
+            <div class="top">Deep work<span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span></div>
+            <div class="val">5.4<small>h</small></div>
+            <div class="note">Target 6.0h · quiet block 9–12</div>
+            <svg class="spark" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline points="0,22 10,18 20,24 30,16 40,20 50,12 60,14 70,10 80,15 90,8 100,10" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="card stat">
+            <div class="top">Net cash flow<span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 8v10a2 2 0 002 2h12a2 2 0 002-2V8M4 8V6a2 2 0 012-2h12a2 2 0 012 2v2"/></svg></span></div>
+            <div class="val">+$1,284</div>
+            <div class="note up">▲ vs. October by $312</div>
+            <svg class="spark" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline points="0,20 10,22 20,17 30,19 40,14 50,16 60,10 70,12 80,7 90,9 100,5" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="card stat">
+            <div class="top">Sleep debt<span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></span></div>
+            <div class="val">−2.1<small>h</small></div>
+            <div class="note">Down 40m — you slept in Sunday</div>
+            <svg class="spark" viewBox="0 0 100 34" preserveAspectRatio="none"><polyline points="0,10 10,14 20,11 30,17 40,13 50,19 60,15 70,21 80,18 90,22 100,20" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+
+        <!-- TWO COL: TODAY LIST + MONTH GRID -->
+        <div class="grid two-col">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2>Today's rhythm</h2>
+                <p class="sub">4 of 6 done · closing in on your streak</p>
+              </div>
+              <span class="pill" id="todayPill">67%</span>
+            </div>
+            <div class="progress"><i style="width:67%"></i></div>
+
+            <div class="h-row done" data-toggle>
+              <div class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div class="title">Wake before 7 · glass of water</div>
+              <span class="meta">06:42</span>
+              <span class="streak">🔥 42</span>
+            </div>
+            <div class="h-row done" data-toggle>
+              <div class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div class="title">Journal · one page, no editing</div>
+              <span class="meta">07:10</span>
+              <span class="streak">🔥 28</span>
+            </div>
+            <div class="h-row done" data-toggle>
+              <div class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div class="title">Deep work · 90 minutes</div>
+              <span class="meta">09:00</span>
+              <span class="streak">🔥 12</span>
+            </div>
+            <div class="h-row done" data-toggle>
+              <div class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div class="title">Walk · 3 km, no phone</div>
+              <span class="meta">12:40</span>
+              <span class="streak">🔥 9</span>
+            </div>
+            <div class="h-row" data-toggle>
+              <div class="check"></div>
+              <div class="title">Read · 20 pages of fiction</div>
+              <span class="meta">21:00</span>
+              <span class="streak">🔥 21</span>
+            </div>
+            <div class="h-row" data-toggle>
+              <div class="check"></div>
+              <div class="title">Lights off by 23:00</div>
+              <span class="meta">23:00</span>
+              <span class="streak">🔥 6</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2>Habit month</h2>
+                <p class="sub">Every square is a day. Darker means more habits kept.</p>
+              </div>
+              <span class="pill" id="monthLabel">November</span>
+            </div>
+            <div class="month-grid" id="monthGrid"></div>
+            <div class="month-legend">
+              <span>less</span>
+              <div class="dots">
+                <span class="dot"></span>
+                <span class="dot" style="background:hsl(var(--hue),22%,86%)"></span>
+                <span class="dot" style="background:hsl(var(--hue),24%,70%)"></span>
+                <span class="dot" style="background:hsl(var(--hue),26%,50%)"></span>
+                <span class="dot" style="background:hsl(var(--hue),28%,28%)"></span>
+              </div>
+              <span>more</span>
+              <span style="margin-left:auto;color:var(--ink-2);font-weight:650">Best streak · 42 days</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TIME TRACKERS -->
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:32px;margin-bottom:14px">
+          <div>
+            <div class="eyebrow">Rhythm of hours</div>
+            <h2>Where your day actually goes</h2>
+          </div>
+          <button class="link-btn">Weekly report →</button>
+        </div>
+
+        <div class="grid time-grid">
+          <!-- Gaming -->
+          <div class="card time-card">
+            <div class="head">
+              <div class="label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="7" width="20" height="12" rx="4"/><path d="M8 12v2M7 13h2M15 12h.01M17 14h.01"/></svg>
+                Gaming time
+              </div>
+              <span class="badge">This week</span>
+            </div>
+            <div class="big">6<small>h 40m</small></div>
+            <div class="goal"><span>Cap 8h / week</span><b>1h 20m left</b></div>
+            <div class="bars" id="barsGaming"></div>
+            <div class="bars-axis"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          </div>
+
+          <!-- Working -->
+          <div class="card time-card">
+            <div class="head">
+              <div class="label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                Working time
+              </div>
+              <span class="badge">This week</span>
+            </div>
+            <div class="big">32<small>h 15m</small></div>
+            <div class="goal"><span>Target 35h / week</span><b>2h 45m to go</b></div>
+            <div class="bars" id="barsWork"></div>
+            <div class="bars-axis"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          </div>
+
+          <!-- Sleeping -->
+          <div class="card time-card">
+            <div class="head">
+              <div class="label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                Sleeping time
+              </div>
+              <span class="badge">This week</span>
+            </div>
+            <div class="big">51<small>h 30m</small></div>
+            <div class="goal"><span>Avg 7h 21m / night</span><b>Goal 7h 30m</b></div>
+            <div class="bars" id="barsSleep"></div>
+            <div class="bars-axis"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          </div>
+        </div>
+
+        <!-- FINANCE STRIP -->
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:32px;margin-bottom:14px">
+          <div>
+            <div class="eyebrow">Slow money</div>
+            <h2>November · so far</h2>
+          </div>
+          <button class="link-btn">Open ledger →</button>
+        </div>
+
+        <div class="grid finance-grid">
+          <!-- Cashflow chart -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2>Cashflow, last 12 weeks</h2>
+                <div class="chart-legend" style="margin-top:6px">
+                  <span><span class="dot"></span>Income</span>
+                  <span><span class="dot faint"></span>Spending</span>
+                </div>
+              </div>
+              <span class="pill dark">+$1,284 net</span>
+            </div>
+            <div class="chart-wrap">
+              <div class="yaxis"><span>$4k</span><span>$3k</span><span>$2k</span><span>$1k</span><span>$0</span></div>
+              <svg viewBox="0 0 600 220" preserveAspectRatio="none" style="padding-left:36px">
+                <defs>
+                  <linearGradient id="gInk" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0" stop-color="hsl(228,28%,10%)" stop-opacity=".18"/>
+                    <stop offset="1" stop-color="hsl(228,28%,10%)" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <!-- gridlines -->
+                <g stroke="hsl(228,20%,93.5%)" stroke-width="1">
+                  <line x1="0" y1="0" x2="600" y2="0"/>
+                  <line x1="0" y1="55" x2="600" y2="55"/>
+                  <line x1="0" y1="110" x2="600" y2="110"/>
+                  <line x1="0" y1="165" x2="600" y2="165"/>
+                  <line x1="0" y1="219" x2="600" y2="219"/>
+                </g>
+                <!-- income area -->
+                <path d="M0,140 C40,120 80,130 100,105 S180,80 220,90 S320,60 360,72 S460,45 500,55 S580,30 600,40 L600,220 L0,220 Z" fill="url(#gInk)"/>
+                <!-- income line -->
+                <path d="M0,140 C40,120 80,130 100,105 S180,80 220,90 S320,60 360,72 S460,45 500,55 S580,30 600,40" fill="none" stroke="hsl(228,28%,10%)" stroke-width="2" stroke-linecap="round"/>
+                <!-- spending line -->
+                <path d="M0,170 C40,160 80,168 100,150 S180,140 220,148 S320,120 360,130 S460,110 500,118 S580,95 600,105" fill="none" stroke="hsl(228,13%,72%)" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 4"/>
+                <!-- dots -->
+                <g fill="hsl(228,28%,10%)">
+                  <circle cx="100" cy="105" r="3"/>
+                  <circle cx="220" cy="90" r="3"/>
+                  <circle cx="360" cy="72" r="3"/>
+                  <circle cx="500" cy="55" r="3"/>
+                  <circle cx="600" cy="40" r="4" stroke="#fff" stroke-width="2"/>
+                </g>
+              </svg>
+            </div>
+            <div class="xaxis"><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span></div>
+          </div>
+
+          <!-- Categories -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2>Where it went</h2>
+                <p class="sub">Top 5 categories · this month</p>
+              </div>
+            </div>
+            <div class="cat-list">
+              <div class="cat-row">
+                <div class="cat-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg></div>
+                <div class="lbl"><b>Rent</b><small>Recurring · monthly</small></div>
+                <div class="val">$1,180<small>36%</small></div>
+              </div>
+              <div class="cat-row">
+                <div class="cat-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M6 6v14M18 6v14M3 20h18"/></svg></div>
+                <div class="lbl"><b>Groceries</b><small>21 transactions</small></div>
+                <div class="val">$412<small>13%</small></div>
+              </div>
+              <div class="cat-row">
+                <div class="cat-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 01-12 0M6 8h12v6a6 6 0 01-12 0V8z"/><path d="M8 2v3M12 2v3M16 2v3"/></svg></div>
+                <div class="lbl"><b>Coffee & tea</b><small>Small daily joys</small></div>
+                <div class="val">$96<small>3%</small></div>
+              </div>
+              <div class="cat-row">
+                <div class="cat-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg></div>
+                <div class="lbl"><b>Subscriptions</b><small>7 active</small></div>
+                <div class="val">$74<small>2%</small></div>
+              </div>
+              <div class="cat-row">
+                <div class="cat-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg></div>
+                <div class="lbl"><b>Gifts & giving</b><small>2 causes</small></div>
+                <div class="val">$60<small>2%</small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BALANCE + TX -->
+        <div class="grid finance-grid" style="margin-top:16px">
+          <div class="balance-card">
+            <div class="lbl">Total balance · all accounts</div>
+            <div class="amt">$14,802<small>.60</small></div>
+            <div class="row">
+              <div><small>Checking</small><b>$3,204</b></div>
+              <div><small>Savings</small><b>$9,180</b></div>
+              <div><small>Investing</small><b>$2,418</b></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2>Latest transactions</h2>
+                <p class="sub">Today · Tuesday</p>
+              </div>
+              <button class="link-btn">All →</button>
+            </div>
+            <div class="tx-row">
+              <div class="tx-ico"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 01-12 0M6 8h12v6a6 6 0 01-12 0V8z"/></svg></div>
+              <div class="t"><b>Morning coffee</b><small>Blue Bottle · 08:12</small></div>
+              <div class="cat">Coffee</div>
+              <div class="amt neg">−$4.80</div>
+            </div>
+            <div class="tx-row">
+              <div class="tx-ico"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg></div>
+              <div class="t"><b>Freelance · Studio K</b><small>Deposit · invoice #041</small></div>
+              <div class="cat">Income</div>
+              <div class="amt pos">+$1,450.00</div>
+            </div>
+            <div class="tx-row">
+              <div class="tx-ico"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M6 6v14M18 6v14M3 20h18"/></svg></div>
+              <div class="t"><b>Trader Joe's</b><small>Groceries · 11:26</small></div>
+              <div class="cat">Groceries</div>
+              <div class="amt neg">−$62.40</div>
+            </div>
+            <div class="tx-row">
+              <div class="tx-ico"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/></svg></div>
+              <div class="t"><b>Figma Pro</b><small>Yearly · autopay</small></div>
+              <div class="cat">Subs</div>
+              <div class="amt neg">−$144.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HABIT ROWS (Weekly breakdown of habits by day) -->
+        <div class="card" style="margin-top:32px">
+          <div class="card-head">
+            <div>
+              <h2>Habits, day by day</h2>
+              <p class="sub">Each row is a habit. Each square is a day of November.</p>
+            </div>
+            <span class="pill" id="habitsPill">Nov 1 — 30</span>
+          </div>
+          <div class="month-header">
+            <div class="col">Habit</div>
+            <div style="width:60%;text-align:left;font-size:10.5px;color:var(--faint);letter-spacing:.1em">Days of month</div>
+            <div style="width:46px;text-align:right">Streak</div>
+            <div style="width:40px;text-align:right">Rate</div>
+          </div>
+          <div class="habit-rows" id="habitRows"></div>
+        </div>
+      </section>
+
+      <!-- ============ CHATS PAGE ============ -->
+      <section class="page" id="chats">
+        <div class="chat-shell">
+          <div class="chat-list">
+            <div class="chat-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+              <input placeholder="Search conversations">
+            </div>
+            <div class="chat-items" id="chatItems"></div>
+          </div>
+          <div class="chat-main">
+            <div class="chat-head">
+              <div class="who">
+                <div class="av" id="chatAv">TR</div>
+                <div>
+                  <b id="chatName">Theo · accountability</b>
+                  <small><span class="status"></span>Online · replied 4 min ago</small>
+                </div>
+              </div>
+              <div class="top-actions">
+                <button class="icon-btn" title="Call"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.37 1.9.72 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0122 16.92z"/></svg></button>
+                <button class="icon-btn" title="Info"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg></button>
+              </div>
+            </div>
+            <div class="chat-body" id="chatBody">
+              <div class="chat-divider">Today · Tue Nov 12</div>
+              <div class="msg them">Morning ✨ how did the 5am wake-up land?<time>08:04</time></div>
+              <div class="msg me">Softer than yesterday. Water first, no phone. Journal in ten minutes.<time>08:06</time></div>
+              <div class="msg them">Beautiful. Streak at 42, right? Don't overthink today — just show up quiet.<time>08:07</time></div>
+              <div class="msg me">42, yes. Deep work block starts at 9. I'll message you at noon with a status.<time>08:09</time></div>
+              <div class="msg them">Perfect. And remember — capping games at 45 min tonight. You told me to hold you to it.<time>08:11</time></div>
+              <div class="msg me">Held. Talk after the walk.<time>08:12</time></div>
+            </div>
+            <div class="chat-compose">
+              <button class="icon-btn" title="Attach"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
+              <input placeholder="Write a quiet thought…" id="chatInput">
+              <button class="chat-send" id="chatSend"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ HABITS PAGE ============ -->
+      <section class="page" id="habits">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Habit month · full view</h2>
+              <p class="sub">Same grid as Today, larger. Click a cell to log a value.</p>
+            </div>
+            <span class="pill">Nov 2024</span>
+          </div>
+          <div class="month-grid" id="monthGrid2"></div>
+          <div class="month-legend">
+            <span>less</span>
+            <div class="dots">
+              <span class="dot"></span>
+              <span class="dot" style="background:hsl(var(--hue),22%,86%)"></span>
+              <span class="dot" style="background:hsl(var(--hue),24%,70%)"></span>
+              <span class="dot" style="background:hsl(var(--hue),26%,50%)"></span>
+              <span class="dot" style="background:hsl(var(--hue),28%,28%)"></span>
+            </div>
+            <span>more</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ FINANCE PAGE ============ -->
+      <section class="page" id="finance">
+        <div class="grid finance-grid">
+          <div class="balance-card">
+            <div class="lbl">Total balance · all accounts</div>
+            <div class="amt">$14,802<small>.60</small></div>
+            <div class="row">
+              <div><small>Checking</small><b>$3,204</b></div>
+              <div><small>Savings</small><b>$9,180</b></div>
+              <div><small>Investing</small><b>$2,418</b></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h2>November snapshot</h2><p class="sub">Income vs. spending</p></div></div>
+            <div style="margin-top:6px;font-size:12px;color:var(--muted)">Income</div>
+            <div style="font-size:22px;font-weight:750;letter-spacing:-.03em">$3,280.00</div>
+            <div class="progress" style="margin:12px 0"><i style="width:100%"></i></div>
+            <div style="font-size:12px;color:var(--muted)">Spending</div>
+            <div style="font-size:22px;font-weight:750;letter-spacing:-.03em">$1,996.40</div>
+            <div class="progress" style="margin:12px 0"><i style="width:61%;background:hsl(var(--hue),13%,72%)"></i></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+/* -------- data -------- */
+const DAYS_IN_MONTH = 30;
+const TODAY = 12; // pretend it's Nov 12
+
+// Deterministic pseudo-random for habit month intensities (0..4)
+function seed(i){ return Math.abs(Math.sin(i*13.13)*10000)%1 }
+const monthIntensity = Array.from({length:DAYS_IN_MONTH},(_,i)=>{
+  if(i+1>TODAY) return -1; // future
+  const v = seed(i+7);
+  if(v<.18) return 0;
+  if(v<.42) return 1;
+  if(v<.68) return 2;
+  if(v<.9) return 3;
+  return 4;
+});
+
+function buildMonthGrid(el){
+  el.innerHTML='';
+  monthIntensity.forEach((lvl,i)=>{
+    const c=document.createElement('div');
+    c.className='month-cell';
+    if(lvl===-1) c.classList.add('future');
+    else if(lvl>0) c.classList.add('l'+lvl);
+    if(i+1===TODAY) c.classList.add('today');
+    c.title=`Nov ${i+1}${lvl>=0?` · ${lvl}/4 habits`:''}`;
+    el.appendChild(c);
+  });
+}
+buildMonthGrid(document.getElementById('monthGrid'));
+buildMonthGrid(document.getElementById('monthGrid2'));
+
+/* habit rows */
+const habits = [
+  { name:'Wake early', pattern:[1,1,1,0,1,1,1, 1,1,1,1,0,1,1, 1,1,1,1,1,0,1, 1,1,1,1,1,1,1,1,1], streak:42, rate:93 },
+  { name:'Journal',    pattern:[1,0,1,1,1,1,0, 1,1,1,1,1,0,1, 1,0,1,1,1,1,1, 1,1,0,1,1,1,1,1,1], streak:28, rate:83 },
+  { name:'Deep work',  pattern:[1,1,0,1,1,0,0, 1,1,1,0,1,1,1, 1,1,0,1,1,0,1, 1,1,1,0,1,1,1,1,1], streak:12, rate:70 },
+  { name:'Walk 3km',   pattern:[1,1,1,1,0,1,1, 1,0,1,1,1,1,0, 1,1,1,0,1,1,1, 1,1,1,1,0,1,1,1,1], streak:9,  rate:86 },
+  { name:'Read fiction', pattern:[1,1,0,1,0,1,1, 0,1,1,1,0,1,1, 1,1,1,1,0,1,1, 1,0,1,1,1,1,0,1,1], streak:21, rate:73 },
+  { name:'No screens after 22', pattern:[0,1,1,0,1,1,0, 1,0,1,1,1,0,1, 1,0,1,1,1,0,1, 1,1,0,1,1,0,1,1,1], streak:6,  rate:60 },
+];
+const habitRows = document.getElementById('habitRows');
+habits.forEach(h=>{
+  const row=document.createElement('div');
+  row.className='habit-row days-30';
+  const track=h.pattern.slice(0,DAYS_IN_MONTH).map((v,i)=>{
+    const cls=['c'];
+    if(i+1>TODAY){ /* future empty */ }
+    else if(v===1) cls.push('on');
+    else if(v===0.5) cls.push('half');
+    if(i+1===TODAY) cls.push('today');
+    return `<div class="${cls.join(' ')}"></div>`;
+  }).join('');
+  row.innerHTML = `
+    <div class="name"><span class="dot"></span>${h.name}</div>
+    <div class="track">${track}</div>
+    <div class="streak">🔥 ${h.streak}</div>
+    <div class="rate">${h.rate}%</div>
+  `;
+  habitRows.appendChild(row);
+});
+
+/* time bars */
+function makeBars(elId, values, maxLabel, todayIdx){
+  const el=document.getElementById(elId);
+  const max=Math.max(...values,1);
+  el.innerHTML='';
+  values.forEach((v,i)=>{
+    const b=document.createElement('div');
+    b.className='bar';
+    if(i===todayIdx) b.classList.add('today');
+    const h=Math.max(6,(v/max)*100);
+    b.style.height=h+'%';
+    const hours=Math.floor(v);
+    const mins=Math.round((v-hours)*60);
+    b.innerHTML=`<span class="tt">${hours}h ${mins}m</span>`;
+    el.appendChild(b);
+  });
+}
+// M T W T F S S — today = Tuesday (idx 1)
+makeBars('barsGaming', [0.75, 1.25, 0, 1.5, 0.5, 2.0, 0.66], null, 1);
+makeBars('barsWork',   [7.5, 6.75, 8.0, 5.5, 4.5, 0, 0], null, 1);
+makeBars('barsSleep',  [7.2, 6.5, 7.8, 7.0, 8.1, 7.4, 7.5], null, 1);
+
+/* today's list toggling */
+document.querySelectorAll('[data-toggle]').forEach(row=>{
+  row.addEventListener('click',()=>{
+    row.classList.toggle('done');
+    const rows=document.querySelectorAll('.h-row');
+    const done=[...rows].filter(r=>r.classList.contains('done')).length;
+    const pct=Math.round(done/rows.length*100);
+    document.querySelector('.progress i').style.width=pct+'%';
+    document.getElementById('todayPill').textContent=pct+'%';
+    document.getElementById('heroScore').textContent=Math.round(70+pct*.2);
+  });
+});
+
+/* nav pages */
+const pageTitles={
+  today:{title:"Good morning, Elena.",sub:"A quiet look at what you're building — habits, hours, and money, held together in one sheet."},
+  habits:{title:"Your habit garden.",sub:"Each square is a day tended. The month grows darker as you show up."},
+  finance:{title:"Slow money.",sub:"Balance today, and the slow arc of the last few weeks."},
+  chats:{title:"Kind conversations.",sub:"Accountability partners, close friends, one coach. Softly, softly."},
+};
+document.querySelectorAll('#nav .nav-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const p=btn.dataset.page;
+    if(!p) return;
+    document.querySelectorAll('#nav .nav-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active'));
+    const target=document.getElementById(p);
+    if(target){
+      target.classList.add('active');
+      const info=pageTitles[p];
+      if(info){
+        document.getElementById('pageTitle').textContent=info.title;
+        document.querySelector('.topbar .sub').textContent=info.sub;
+      }
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+  });
+});
+
+/* chat list */
+const chats=[
+  {id:0,name:'Theo · accountability',av:'TR',last:'Held. Talk after the walk.',time:'now',unread:0,active:true},
+  {id:1,name:'Mira ☕',av:'MI',last:'Coffee tomorrow? 8:15 at the usual place.',time:'11m',unread:2},
+  {id:2,name:'Dad',av:'PA',last:'Photos from the garden — the light was good today.',time:'1h',unread:0},
+  {id:3,name:'Money coach · Ana',av:'AN',last:'Nice — the November plan is holding. Keep the auto-transfer.',time:'3h',unread:1},
+  {id:4,name:'Book club',av:'BC',last:'Sam: shall we push Sunday to 7?',time:'yesterday',unread:1},
+  {id:5,name:'Cal · gym',av:'CA',last:'Tomorrow 7am — lower body. Sleep well.',time:'2d',unread:0},
+];
+const chatItems=document.getElementById('chatItems');
+chats.forEach(c=>{
+  const el=document.createElement('div');
+  el.className='chat-item'+(c.active?' active':'');
+  el.innerHTML=`
+    <div class="av">${c.av}</div>
+    <div class="info">
+      <div class="top"><b>${c.name}</b><time>${c.time}</time></div>
+      <p>${c.last}${c.unread?`<span class="un">${c.unread}</span>`:''}</p>
+    </div>
+  `;
+  el.addEventListener('click',()=>{
+    document.querySelectorAll('.chat-item').forEach(x=>x.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('chatName').textContent=c.name;
+    document.getElementById('chatAv').textContent=c.av;
+  });
+  chatItems.appendChild(el);
+});
+
+/* chat send */
+const chatBody=document.getElementById('chatBody');
+const chatInput=document.getElementById('chatInput');
+const chatSend=document.getElementById('chatSend');
+function sendMessage(){
+  const txt=chatInput.value.trim();
+  if(!txt) return;
+  const t=new Date();
+  const hh=t.getHours().toString().padStart(2,'0'), mm=t.getMinutes().toString().padStart(2,'0');
+  const msg=document.createElement('div');
+  msg.className='msg me';
+  msg.innerHTML=`${txt.replace(/</g,'&lt;')}<time>${hh}:${mm}</time>`;
+  chatBody.appendChild(msg);
+  chatInput.value='';
+  chatBody.scrollTop=chatBody.scrollHeight;
+  // gentle bot reply
+  setTimeout(()=>{
+    const replies=["Noted 🌿","Held. Keep going.","One breath at a time.","Beautiful. Show up quietly.","Streak intact — proud of you."];
+    const r=document.createElement('div');
+    r.className='msg them';
+    r.innerHTML=`${replies[Math.floor(Math.random()*replies.length)]}<time>${hh}:${(parseInt(mm)+1).toString().padStart(2,'0')}</time>`;
+    chatBody.appendChild(r);
+    chatBody.scrollTop=chatBody.scrollHeight;
+  },900);
+}
+chatSend.addEventListener('click',sendMessage);
+chatInput?.addEventListener('keydown',e=>{ if(e.key==='Enter') sendMessage(); });
+
+/* date eyebrow */
+(function(){
+  const d=new Date();
+  const days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  document.getElementById('dateEyebrow').textContent=`${days[d.getDay()]} · ${months[d.getMonth()]} ${d.getDate()}`;
+})();
+</script>
+</body>
+</html>
